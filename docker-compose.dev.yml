@@ -1,0 +1,9 @@
+version: "3.3"
+
+services:
+  fastapi:
+    build: services/fastapi/.
+    deploy:
+      replicas: 2
+    ports:
+      - "3000-3001:80"

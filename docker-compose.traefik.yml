@@ -22,6 +22,7 @@ services:
       - "traefik.http.routers.traefik.middlewares=simpleAuth"
       - "traefik.http.routers.traefik.tls.certresolver=le"
       - "traefik.http.routers.traefik.entrypoints=websecure"
+        # echo $(htpasswd -nB admin) | sed -e s/\\$/\\$\\$/g
       - "traefik.http.middlewares.simpleAuth.basicauth.users=admin:$$2y$$05$$msg4yhqz5.a3jyj6e7CflOMNp0umqYCEVY6NDatOsEZZ1wSzoJhyu"
     ports:
       - "80:80"
