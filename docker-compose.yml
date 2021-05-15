@@ -11,3 +11,38 @@ services:
       - "traefik.http.routers.whoami.entrypoints=websecure"
       - "traefik.http.routers.whoami.tls.certresolver=le"
       - "traefik.http.services.whoami.loadbalancer.server.port=80"
+  fastapi:
+    build: services/fastapi/.
+    deploy:
+      replicas: 2
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.fastapi.rule=Host(`fastapi.joaomanoel.com.br`)"
+      - "traefik.http.routers.fastapi.entrypoints=websecure"
+      - "traefik.http.routers.fastapi.tls.certresolver=le"
+      - "traefik.http.services.fastapi.loadbalancer.server.port=80"
+  express_api:
+    build: services/express_api/.
+    environment:
+      - PORT=${express_api_PORT}
+      - DB_USER=${DB_USER}
+      - DB_NAME=${DB_NAME}
+      - DB_HOST=database
+      - DB_PASSWORD=
+    deploy:
+      replicas: 5
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.express_api.rule=Host(`api.joaomanoel.com.br`)"
+      - "traefik.http.routers.express_api.entrypoints=websecure"
+      - "traefik.http.routers.express_api.tls.certresolver=le"
+      - "traefik.http.services.express_api.loadbalancer.server.port=${express_api_PORT}"
+  database:
+    restart: always
+    build: services/database/.
+    container_name: socks_inventory_db
+    environment:
+      - DB_USER=${DB_USER}
+      - DB_NAME=${DB_NAME}
+    volumes:
+      - "./services/database/pgdata:/var/lib/postgresql/data"
