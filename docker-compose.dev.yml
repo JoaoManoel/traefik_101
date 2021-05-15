@@ -7,3 +7,12 @@ services:
       replicas: 2
     ports:
       - "3000-3001:80"
+  database:
+    restart: always
+    build: services/database/.
+    container_name: socks_inventory_db
+    environment:
+      - DB_USER=${DB_USER}
+      - DB_NAME=${DB_NAME}
+    volumes:
+      - "./services/database/pgdata:/var/lib/postgresql/data"
