@@ -7,6 +7,18 @@ services:
       replicas: 2
     ports:
       - "3000-3001:80"
+  express_api:
+    build: services/express_api/.
+    environment:
+      - PORT=3000
+      - DB_USER=${DB_USER}
+      - DB_NAME=${DB_NAME}
+      - DB_HOST=database
+      - DB_PASSWORD=
+    deploy:
+      replicas: 5
+    ports:
+      - "2000-2004:${express_api_PORT}"
   database:
     restart: always
     build: services/database/.
