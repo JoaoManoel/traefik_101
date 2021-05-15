@@ -1,8 +1,9 @@
-version: "3.0"
+version: "3.3"
 
 services:
-  backend:
-    build: ./
-    restart: always
-    ports:
-      - 80:80
+  whoami:
+    image: "traefik/whoami"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`whoami.joaomanoel.com.br`)"
+      - "traefik.http.routers.whoami.entrypoints=web"
