@@ -37,6 +37,9 @@ services:
       - "traefik.http.routers.express_api.entrypoints=websecure"
       - "traefik.http.routers.express_api.tls.certresolver=le"
       - "traefik.http.services.express_api.loadbalancer.server.port=${express_api_PORT}"
+      - "traefik.http.services.express_api.loadbalancer.healthcheck.path=/health"
+      - "traefik.http.services.express_api.loadbalancer.healthcheck.interval=30s"
+      - "traefik.http.services.express_api.loadbalancer.healthcheck.timeout=3s"
   database:
     restart: always
     build: services/database/.
