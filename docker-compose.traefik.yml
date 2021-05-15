@@ -8,6 +8,12 @@ services:
       - "--api.dashboard=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
+      - "--accesslog=true"
+      - "--accesslog.filepath=/var/log/access.log"
+      - "--log.level=INFO"
+      - "--log.filePath=/var/log/traefik.log"
+      - "--metrics.statsd=true"
+      - "--metrics.statsd.address=localhost:8125"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
       - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
@@ -30,3 +36,19 @@ services:
     volumes:
       - "./letsencrypt:/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "/var/log/traefik.log:/var/log/traefik.log"
+      - "/var/log/access.log:/var/log/access.log"
+  statsd:
+    image: "graphiteapp/graphite-statsd"
+    restart: "unless-stopped"
+    ports:
+      - "2003-2004:2003-2004"
+      - "2023-2024:2023-2024"
+      - "8125:8125/udp"
+      - "8126:8126"
+      - "1880:80"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.statsd.rule=Host(`graphite.joaomanoel.com.br`)"
+      - "traefik.http.routers.statsd.entrypoints=websecure"
+      - "traefik.http.routers.statsd.tls.certresolver=le"
